@@ -16,15 +16,19 @@ public class ConsumerQueue {
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://127.0.0.1:61616");
         //使用连接工厂创建一个连接对象
         Connection connection = connectionFactory.createConnection();
+        connection.setClientID( "consumer_persistant1" );
         //开启连接
         connection.start();
         //使用连接对象创建一个会话
-        Session session = connection.createSession();
+        Session session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
         //使用会话创建目标对象,包含queue和topic（一对一模式和一对多模式）
-        Queue queue = session.createQueue("test_queue");
+        Topic topic = session.createTopic("test_queue3");
+        //设置持久化
+        session.createDurableSubscriber( topic,"consumer_persistant1" );
         //创建consumer对象
-        MessageConsumer consumer = session.createConsumer(queue);
-        //再consumer对象中设置messageListener对象
+        MessageConsumer consumer = session.createConsumer(topic);
+        //异步接收消息：注册一个实现了messageListener接口的对象到MessageConsumer
+        //MessageListener必须要有一个实现方法，onMessage
         consumer.setMessageListener(new MessageListener() {
             @Override
             public void onMessage(Message message) {

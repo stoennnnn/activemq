@@ -1,5 +1,14 @@
-server:
-  port: 8081
+#activemq配置
+#这里配置一定不要有空格，否则会出现jsTemplate无法注入的报错
 spring:
   activemq:
-    broker-url: tcp//127.0.0.1:61616
+    broker-url: tcp://127.0.0.1:61616
+    # 默认代理URL是否应该在内存中。如果指定了显式代理，则忽略此值。
+    in-memory: true
+    pool:
+      enabled: false
+    user: admin
+    password: admin
+#默认情况下activemq提供的是queue模式，若要使用topic模式需要配置下面配置
+  jms:
+    pub-sub-domain: true
